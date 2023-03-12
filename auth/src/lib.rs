@@ -1,3 +1,27 @@
+pub struct User {
+    username: String,
+    password: String,
+    action: LoginAction,
+}
+
+impl User {
+    pub fn new(username: &str, password: &str, action: LoginAction)-> Self {
+        Self {
+            username: username.to_string(),
+            password: password.to_string(),
+            action 
+        }
+    }
+}
+
+pub fn get_users() -> [User; 3] {
+    [
+        User::new("doc", "password", LoginAction::Accept(Role)),
+        User::new("bob", "password2", LoginAction::Accept(Role)),
+        User::new("susan", "password3", LoginAction::Denied(DeniedReason)),
+    ]
+}
+
 #[derive(PartialEq, Debug)]
 pub enum LoginAction {
     Accept(Role),
