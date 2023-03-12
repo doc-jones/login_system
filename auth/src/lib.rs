@@ -8,6 +8,13 @@ impl LoginAction {
     fn standard_user() -> Option<Self>{
         Some(LoginAction::Accept(Role::User))
     }
+
+    pub fn do_login(&self) {
+        match self {
+            Self::Accept(role) => do_something(),
+            Self::Denied(reason) => do_something_else(),
+        }
+    }
 } 
 
 #[derive(PartialEq, Debug)]
