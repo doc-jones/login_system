@@ -24,18 +24,18 @@ pub fn get_users() -> [User; 3] {
 
 pub fn login(users: &[User], username: &str, password: &str) -> Option<LoginAction>
 {
-    username = username.to_lowercase().trim();
-    password = password.trim();
+    let username = username.trim().to_lowercase();
+    let password = password.trim();
     if let Some(user) = users
         .iter()
         .find(|u| u.username == username && u.password == password) {
-        Some(user.action)
+        Some(user.action.clone())
     } else {
         None
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum LoginAction {
     Accept(Role),
     Denied(DeniedReason),
@@ -54,14 +54,14 @@ impl LoginAction {
     }
 } 
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Role {
     Admin,
     User,
     Limited,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum DeniedReason {
     PasswordExpired,
     AccountLocked { reason: String },
