@@ -22,6 +22,19 @@ pub fn get_users() -> [User; 3] {
     ]
 }
 
+pub fn login(users: &[User], username: &str, password: &str) -> Option<LoginAction>
+{
+    username = username.to_lowercase().trim();
+    password = password.trim();
+    if let Some(user) = users
+        .iter()
+        .find(|u| u.username == username && u.password == password) {
+        Some(user.action)
+    } else {
+        None
+    }
+}
+
 #[derive(PartialEq, Debug)]
 pub enum LoginAction {
     Accept(Role),
@@ -54,14 +67,14 @@ pub enum DeniedReason {
     AccountLocked { reason: String },
     NoAccount { action: String },
 }
-
+/*
 pub fn login(name: &str) -> Option<LoginAction> {
     match name.to_lowercase().trim() {
         "doc" => Some(LoginAction::Accept(Role::Admin)),
         "bob" | "susan" => LoginAction::standard_user(),
         _ => None,
     }
-}
+}*/
 
 pub fn greet_user(name: &str) -> String {
     format!("Hello {name}")
