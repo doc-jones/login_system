@@ -16,9 +16,9 @@ impl User {
 
 pub fn get_users() -> [User; 3] {
     [
-        User::new("doc", "password", LoginAction::Accept(Role)),
-        User::new("bob", "password2", LoginAction::Accept(Role)),
-        User::new("susan", "password3", LoginAction::Denied(DeniedReason)),
+        User::new("doc", "password", LoginAction::Accept(Role::Admin)),
+        User::new("bob", "password2", LoginAction::Accept(Role::User)),
+        User::new("susan", "password3", LoginAction::Denied(DeniedReason::PasswordExpired)),
     ]
 }
 
