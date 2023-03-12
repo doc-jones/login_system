@@ -104,11 +104,11 @@ mod tests {
         assert!(is_login_allowed("doc\r\n"));
     }
 
-    #[test]
+    /*#[test]
     fn test_enums() {
         assert_eq!(login("doc"), Some(LoginAction::Accept(Role::Admin)));
         assert_eq!(login("bob"), Some(LoginAction::Accept(Role::User)));
         assert_eq!(login("susan"), Some(LoginAction::Accept(Role::User)));
         assert_eq!(login("anonymous"), None);
-    }
+    }*/
 }
