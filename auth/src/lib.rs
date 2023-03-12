@@ -1,3 +1,5 @@
+use std::iter::Map;
+
 pub struct User {
     username: String,
     password: String,
@@ -26,13 +28,10 @@ pub fn login(users: &[User], username: &str, password: &str) -> Option<LoginActi
 {
     let username = username.trim().to_lowercase();
     let password = password.trim();
-    if let Some(user) = users
+    users
         .iter()
-        .find(|u| u.username == username && u.password == password) {
-        Some(user.action.clone())
-    } else {
-        None
-    }
+        .find(|u| u.username == username && u.password == password)
+        .map(|user| user.action.clone())
 }
 
 #[derive(PartialEq, Debug, Clone)]
