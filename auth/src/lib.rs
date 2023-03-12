@@ -1,5 +1,3 @@
-use std::iter::Map;
-
 pub struct User {
     username: String,
     password: String,
@@ -16,8 +14,8 @@ impl User {
     }
 }
 
-pub fn get_users() -> [User; 3] {
-    [
+pub fn get_users() -> Vec<User> {
+    vec![
         User::new("doc", "password", LoginAction::Accept(Role::Admin)),
         User::new("bob", "password2", LoginAction::Accept(Role::User)),
         User::new("susan", "password3", LoginAction::Denied(DeniedReason::PasswordExpired)),
