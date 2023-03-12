@@ -1,5 +1,8 @@
 use auth::{login, LoginAction, Role, DeniedReason};
 
+fn user_accepted(role: &Role) {
+    println!("You are logged in as {role:?}");
+}
 fn main() {
     println!("Welcome to the not at all secure login system");
     println!("Enter your username:");
@@ -10,15 +13,10 @@ fn main() {
 
     match login(&input) {
         None => println!("{} is not a known user.", input.trim()),
-        Some(LoginAction::Accept(role)) => {
-            match role {
-                Role::Admin => println!("Welcome Admin!"),
-                Role::Limited => println!("Welcome, your access is limited."),
-                Role::User => println!("Welcome User."),
-            }
-        }
-        Some(LoginAction::Denied(DeniedReason::PasswordExpired)) => {
-            println!("Expired Password");
+        Some(login_action) => {
+            login_action.do_login(user_accepted, |reason| {
+                println!("Log in not allowed! {reason:?}");
+            })
         }
         _ => {}
     }

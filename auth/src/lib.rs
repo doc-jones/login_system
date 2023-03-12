@@ -9,10 +9,10 @@ impl LoginAction {
         Some(LoginAction::Accept(Role::User))
     }
 
-    pub fn do_login(&self) {
+    pub fn do_login(&self, on_success: fn(&Role), on_denied: fn(&DeniedReason)) {
         match self {
-            Self::Accept(role) => do_something(),
-            Self::Denied(reason) => do_something_else(),
+            Self::Accept(role) => on_success(role),
+            Self::Denied(reason) => on_denied(reason),
         }
     }
 } 
