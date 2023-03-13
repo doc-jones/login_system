@@ -54,7 +54,7 @@ pub fn get_users() -> HashMap<String, User> {
 pub fn login(users: &HashMap<String, User>, username: &str, password: &str) -> Option<LoginAction>
 {
     let username = username.trim().to_lowercase();
-    let password = password.trim();
+    let password = hash_password(password.trim());
     if let Some(user) = users.get(&username) {
         if user.password == password {
             return Some(user.action.clone());

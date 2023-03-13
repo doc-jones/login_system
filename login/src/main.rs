@@ -1,11 +1,11 @@
-use auth::{login, LoginAction, Role, DeniedReason};
+use auth::{login, LoginAction, Role, DeniedReason, hash_password};
 use auth::get_users;
 
 fn user_accepted(role: &Role) {
     println!("You are logged in as {role:?}");
 }
 fn main() {
-    auth::build_users_file();
+    //auth::build_users_file();
     println!("Welcome to the not at all secure login system");
 
     let users = get_users();
