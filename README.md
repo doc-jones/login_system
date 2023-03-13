@@ -8,6 +8,7 @@
 - Add doc and help comments
 - optimize
 - add more security features beyond hashing passwords
+- add logout
 - connect to something like a web server or something meaningful
 
 
