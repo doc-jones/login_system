@@ -1,6 +1,7 @@
 use std::collections::HashMap;
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct User {
     pub username: String,
     password: String,
@@ -17,7 +18,15 @@ impl User {
     }
 }
 
-pub fn get_users() -> HashMap<String, User> {
+pub fn build_users_file() {
+    use std::io::Write;
+    let users = get_users();
+    let json = serde_json::to_string(&users).unwrap();
+    let mut f = std::fs::File::create("users.json").unwrap();
+    f.write_all(json.as_bytes()).unwrap();
+}
+
+/*pub fn get_users() -> HashMap<String, User> {
     let users = vec![
         User::new("doc", "password", LoginAction::Accept(Role::Admin)),
         User::new("bob", "password2", LoginAction::Accept(Role::User)),
@@ -28,6 +37,11 @@ pub fn get_users() -> HashMap<String, User> {
         .map(|user| (user.username.clone(), user.clone()))
         .collect();
     user_tuple
+}*/
+
+pub fn get_users() -> HashMap<String, User> {
+    let json = std::fs::read_to_string("users.json").unwrap();
+    serde_json::from_str(&json).unwrap()
 }
 
 pub fn login(users: &HashMap<String, User>, username: &str, password: &str) -> Option<LoginAction>
@@ -42,7 +56,7 @@ pub fn login(users: &HashMap<String, User>, username: &str, password: &str) -> O
     None
 }
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum LoginAction {
     Accept(Role),
     Denied(DeniedReason),
@@ -61,14 +75,14 @@ impl LoginAction {
     }
 } 
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum Role {
     Admin,
     User,
     Limited,
 }
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum DeniedReason {
     PasswordExpired,
     AccountLocked { reason: String },
