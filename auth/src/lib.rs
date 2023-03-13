@@ -12,10 +12,17 @@ impl User {
     pub fn new(username: &str, password: &str, action: LoginAction)-> Self {
         Self {
             username: username.to_string(),
-            password: password.to_string(),
+            password: hash_password(password),
             action 
         }
     }
+}
+
+pub fn hash_password(password: &str) -> String {
+    use sha2::Digest;
+    let mut hasher = sha2::Sha256::new();
+    hasher.update(password);
+    format!("{:X}", hasher.finalize())
 }
 
 pub fn build_users_file() {
@@ -26,7 +33,7 @@ pub fn build_users_file() {
     f.write_all(json.as_bytes()).unwrap();
 }
 
-/*pub fn get_users() -> HashMap<String, User> {
+pub fn get_users() -> HashMap<String, User> {
     let users = vec![
         User::new("doc", "password", LoginAction::Accept(Role::Admin)),
         User::new("bob", "password2", LoginAction::Accept(Role::User)),
@@ -37,12 +44,12 @@ pub fn build_users_file() {
         .map(|user| (user.username.clone(), user.clone()))
         .collect();
     user_tuple
-}*/
+}
 
-pub fn get_users() -> HashMap<String, User> {
+/*pub fn get_users() -> HashMap<String, User> {
     let json = std::fs::read_to_string("users.json").unwrap();
     serde_json::from_str(&json).unwrap()
-}
+}*/
 
 pub fn login(users: &HashMap<String, User>, username: &str, password: &str) -> Option<LoginAction>
 {
