@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
+#[derive(Clone, Debug)]
 pub struct User {
-    username: String,
+    pub username: String,
     password: String,
     action: LoginAction,
 }
@@ -14,22 +17,29 @@ impl User {
     }
 }
 
-pub fn get_users() -> Vec<User> {
-    vec![
+pub fn get_users() -> HashMap<String, User> {
+    let users = vec![
         User::new("doc", "password", LoginAction::Accept(Role::Admin)),
         User::new("bob", "password2", LoginAction::Accept(Role::User)),
         User::new("susan", "password3", LoginAction::Denied(DeniedReason::PasswordExpired)),
-    ]
+    ];
+    let user_tuple = users
+        .iter()
+        .map(|user| (user.username.clone(), user.clone()))
+        .collect();
+    user_tuple
 }
 
-pub fn login(users: &[User], username: &str, password: &str) -> Option<LoginAction>
+pub fn login(users: &HashMap<String, User>, username: &str, password: &str) -> Option<LoginAction>
 {
     let username = username.trim().to_lowercase();
     let password = password.trim();
-    users
-        .iter()
-        .find(|u| u.username == username && u.password == password)
-        .map(|user| user.action.clone())
+    if let Some(user) = users.get(&username) {
+        if user.password == password {
+            return Some(user.action.clone());
+        }
+    }
+    None
 }
 
 #[derive(PartialEq, Debug, Clone)]
