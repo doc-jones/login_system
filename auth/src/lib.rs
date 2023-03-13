@@ -33,6 +33,8 @@ pub fn build_users_file() {
     f.write_all(json.as_bytes()).unwrap();
 }
 
+pub type UserList = HashMap<String, User>;
+
 pub fn get_users() -> HashMap<String, User> {
     let users = vec![
         User::new("doc", "password", LoginAction::Accept(Role::Admin)),
