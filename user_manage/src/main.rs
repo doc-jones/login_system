@@ -1,22 +1,32 @@
 use clap::{Parser, Subcommand};
-use auth::get_users;
+use auth::{ get_users, UserList, LoginAction, Role, User};
 
 #[derive(Parser)]
 #[command()]
 struct Args {
-    #[command(subcommand)]
-    command: Option<Commands>
+  #[command(subcommand)]
+  command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
 enum Commands {
-    /// List all users,
-    List,
+  /// List all users.
+  List,
 }
 
 fn list_users(users: &UserList) {
-    println!("{:<20}, {:<20}", "Username", "Login Action");
+    use colored::Colorize;
+    println!("{:<20}{:<20}", "Username", "Login Action");
     println!("{:-<40}", "");
+
+    users.iter().for_each(|(_key, user)| {
+        let action = format!("{:?}", user.action);
+        let action = match user.action {
+            auth::LoginAction::Accept(..) => action.green(),
+            auth::LoginAction::Denied(..) => action.red(),
+        };
+        println!("{:<20}{:<20}", user.username, action);
+    });
 }
 
 

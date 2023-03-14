@@ -1,22 +1,29 @@
+//! # Authentication
+//! 
+//! This module provides an insecurelogin environment that can be used with other servers and apps.
+
+#![warn(missing_docs)]
+
+use serde::{Deserialize, Serialize};
+pub use user::User;
 use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
+mod user;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct User {
-    pub username: String,
-    password: String,
-    action: LoginAction,
+pub mod prelude {
+    pub use crate::hash_password;
 }
 
-impl User {
-    pub fn new(username: &str, password: &str, action: LoginAction)-> Self {
-        Self {
-            username: username.to_string(),
-            password: hash_password(password),
-            action 
-        }
-    }
-}
+/// `hash_password` applies a SHA256 digest to a string
+/// and returns a text representation of the hash (in hex).
+/// 
+/// ## Arguments
+/// 
+/// * `password` - the password to hash.
+/// 
+/// ```
+/// use auth::hash_password;
+/// println!("{}", hash_password("test"));
+/// ```
 
 pub fn hash_password(password: &str) -> String {
     use sha2::Digest;
@@ -33,9 +40,14 @@ pub fn build_users_file() {
     f.write_all(json.as_bytes()).unwrap();
 }
 
-pub type UserList = HashMap<String, User>;
+pub fn save_users_file(users: &UserList) {
+    use std::io::Write;
+    let json = serde_json::to_string(&users).unwrap();
+    let mut f = std::fs::File::create("users.json").unwrap();
+    f.write_all(json.as_bytes()).unwrap();
+}
 
-pub fn get_users() -> HashMap<String, User> {
+/*pub fn get_users() -> HashMap<String, User> {
     let users = vec![
         User::new("doc", "password", LoginAction::Accept(Role::Admin)),
         User::new("bob", "password2", LoginAction::Accept(Role::User)),
@@ -43,23 +55,25 @@ pub fn get_users() -> HashMap<String, User> {
     ];
     let user_tuple = users
         .iter()
-        .map(|user| (user.username.clone(), user.clone()))
+        .map(|user| (user.clone(), user.clone()))
         .collect();
     user_tuple
-}
+} */
 
-/*pub fn get_users() -> HashMap<String, User> {
+pub type UserList = HashMap<String, User>;
+
+pub fn get_users() -> HashMap<String, User> {
     let json = std::fs::read_to_string("users.json").unwrap();
     serde_json::from_str(&json).unwrap()
-}*/
+}
 
 pub fn login(users: &HashMap<String, User>, username: &str, password: &str) -> Option<LoginAction>
 {
     let username = username.trim().to_lowercase();
     let password = hash_password(password.trim());
     if let Some(user) = users.get(&username) {
-        if user.password == password {
-            return Some(user.action.clone());
+        if user = password {
+            return Some(user.clone());
         }
     }
     None
@@ -75,14 +89,14 @@ impl LoginAction {
     fn standard_user() -> Option<Self>{
         Some(LoginAction::Accept(Role::User))
     }
+}
 
-    pub fn do_login(&self, on_success: fn(&Role), on_denied: fn(&DeniedReason)) {
-        match self {
-            Self::Accept(role) => on_success(role),
-            Self::Denied(reason) => on_denied(reason),
-        }
+pub fn do_login(&self, on_success: fn(&Role), on_denied: fn(&DeniedReason)) {
+    match self {
+        Self::Accept(role) => on_success(role),
+        Self::Denied(reason) => on_denied(reason),
     }
-} 
+}
 
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum Role {

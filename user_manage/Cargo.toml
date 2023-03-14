@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 auth = { path = "../auth" }
 clap = { version = "4", features = [ "derive" ] }
-
+colored = "2"
