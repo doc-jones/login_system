@@ -1,6 +1,6 @@
 //! # Authentication
 //! 
-//! This module provides an insecurelogin environment that can be used with other servers and apps.
+//! This module provides an insecure login environment that can be used with other servers and apps.
 
 #![warn(missing_docs)]
 
@@ -89,14 +89,15 @@ impl LoginAction {
     fn standard_user() -> Option<Self>{
         Some(LoginAction::Accept(Role::User))
     }
-}
 
-pub fn do_login(&self, on_success: fn(&Role), on_denied: fn(&DeniedReason)) {
-    match self {
-        Self::Accept(role) => on_success(role),
-        Self::Denied(reason) => on_denied(reason),
+    pub fn do_login(&self, on_success: fn(&Role), on_denied: fn(&DeniedReason)) {
+        match self {
+            Self::Accept(role) => on_success(role),
+            Self::Denied(reason) => on_denied(reason),
+        }
     }
 }
+
 
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum Role {

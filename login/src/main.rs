@@ -1,5 +1,4 @@
 use auth::{login, LoginAction, Role, DeniedReason, get_users, hash_password};
-use auth::get_users;
 
 fn user_accepted(role: &Role) {
     println!("You are logged in as {role:?}");
