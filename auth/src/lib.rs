@@ -1,8 +1,8 @@
-//! # Authentication
-//! 
-//! This module provides an insecure login environment that can be used with other servers and apps.
+/// # Authentication
+/// 
+/// This module provides an insecure login environment that can be used with other servers and apps.
 
-#![warn(missing_docs)]
+/// #![warn(missing_docs)]
 
 use serde::{Deserialize, Serialize};
 pub use user::User;
